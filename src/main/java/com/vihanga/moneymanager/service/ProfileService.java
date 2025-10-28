@@ -4,6 +4,7 @@ import com.vihanga.moneymanager.dto.AuthDto;
 import com.vihanga.moneymanager.dto.ProfileDto;
 import com.vihanga.moneymanager.entity.ProfileEntity;
 import com.vihanga.moneymanager.repository.ProfileRepository;
+import com.vihanga.moneymanager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +24,7 @@ public class ProfileService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     public ProfileDto registerProfile(ProfileDto profileDto){
 
@@ -108,9 +110,9 @@ public class ProfileService {
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDto.getEmail(),authDto.getPassword()));
             //generate jwt token
-
+            String token = jwtUtil.generateToken(authDto.getEmail());
             return Map.of(
-                    "token","JWT token",
+                    "token",token,
                     "user",getPublicProfile(authDto.getEmail())
             );
         } catch (RuntimeException e) {
