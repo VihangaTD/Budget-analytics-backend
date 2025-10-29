@@ -1,16 +1,16 @@
 package com.vihanga.moneymanager.service;
 
 import com.vihanga.moneymanager.dto.ExpenseDto;
-import com.vihanga.moneymanager.dto.IncomeDto;
 import com.vihanga.moneymanager.entity.CategoryEntity;
 import com.vihanga.moneymanager.entity.ExpenseEntity;
-import com.vihanga.moneymanager.entity.IncomeEntity;
 import com.vihanga.moneymanager.entity.ProfileEntity;
 import com.vihanga.moneymanager.repository.CategoryRepository;
 import com.vihanga.moneymanager.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -51,6 +51,27 @@ public class ExpenseService {
             throw new RuntimeException("Unauthorize to delete this expense");
         }
         expenseRepository.delete(entity);
+    }
+
+    //get latest 5 expenses for current user
+    public List<ExpenseDto> getLatest5ExpensesForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<ExpenseEntity> list = expenseRepository.findTop5ByProfileIdOrderByDateDesc(profile.getId());
+        return list.stream().map(this::toDto).toList();
+    }
+
+    //get total expenses of current user
+    public BigDecimal getTotalExpenseForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        BigDecimal total = expenseRepository.findTotalExpenseByProfileId(profile.getId());
+        return total != null ? total: BigDecimal.ZERO;
+    }
+
+    //filter expenses
+    public List<ExpenseDto> filterExpenses(LocalDate startDate, LocalDate endDate, String keyword, Sort sort){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(), startDate,endDate,keyword,sort);
+        return list.stream().map(this::toDto).toList();
     }
 
     //helper methods

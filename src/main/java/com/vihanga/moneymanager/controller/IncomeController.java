@@ -1,6 +1,5 @@
 package com.vihanga.moneymanager.controller;
 
-import com.vihanga.moneymanager.dto.ExpenseDto;
 import com.vihanga.moneymanager.dto.IncomeDto;
 import com.vihanga.moneymanager.service.IncomeService;
 import lombok.RequiredArgsConstructor;

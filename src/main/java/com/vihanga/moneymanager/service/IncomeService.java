@@ -9,8 +9,10 @@ import com.vihanga.moneymanager.entity.ProfileEntity;
 import com.vihanga.moneymanager.repository.CategoryRepository;
 import com.vihanga.moneymanager.repository.IncomeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -51,6 +53,27 @@ public class IncomeService {
             throw new RuntimeException("Unauthorize to delete this income");
         }
         incomeRepository.delete(entity);
+    }
+
+    //get latest 5 incomes for current user
+    public List<IncomeDto> getLatest5IncomesForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<IncomeEntity> list = incomeRepository.findTop5ByProfileIdOrderByDateDesc(profile.getId());
+        return list.stream().map(this::toDto).toList();
+    }
+
+    //get total incomes of current user
+    public BigDecimal getTotalIncomeForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        BigDecimal total = incomeRepository.findTotalExpenseByProfileId(profile.getId());
+        return total != null ? total: BigDecimal.ZERO;
+    }
+
+    //filter incomes
+    public List<IncomeDto> filterIncomes(LocalDate startDate, LocalDate endDate, String keyword, Sort sort){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<IncomeEntity> list = incomeRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(), startDate,endDate,keyword,sort);
+        return list.stream().map(this::toDto).toList();
     }
 
     //helper methods
