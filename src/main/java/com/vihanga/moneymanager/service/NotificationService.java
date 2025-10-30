@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -39,8 +38,8 @@ public class NotificationService {
         log.info("Job completed: sendDailyIncomeExpenseReminder()");
     }
 
-    @Scheduled(cron = "0 * * * * *",zone = "Asia/Colombo" )
-//    @Scheduled(cron = "0 0 23 * * *",zone = "Asia/Colombo" )
+//    @Scheduled(cron = "0 * * * * *",zone = "Asia/Colombo" )
+    @Scheduled(cron = "0 0 23 * * *",zone = "Asia/Colombo" )
     public void sendDailyExpenseSummary(){
         log.info("Job started: sendDailyExpenseSummary()");
         List<ProfileEntity> profiles = profileRepository.findAll();
@@ -49,7 +48,7 @@ public class NotificationService {
             if (!todayExpenses.isEmpty()){
                 StringBuilder table = new StringBuilder();
                 table.append("<table style='border-collapse;width:100%;'>");
-                table.append("<tr style='background-color:#f2f2f2;'><th style='border:1px solid #ddd;padding:8px;'>Name</th><th style='border:1px solid #ddd;padding:8px;'>Amount</th><th style='border:1px solid #ddd;padding:8px;'>Category</th><th style='border:1px solid #ddd;padding:8px;'>Date</th></tr>");
+                table.append("<tr style='background-color:#f2f2f2;'><th style='border:1px solid #ddd;padding:8px;'>S. No</th><th style='border:1px solid #ddd;padding:8px;'>Name</th><th style='border:1px solid #ddd;padding:8px;'>Amount</th><th style='border:1px solid #ddd;padding:8px;'>Category</th></tr>");
                 int i = 1;
                 for (ExpenseDto expense:todayExpenses){
                     table.append("<tr>");
