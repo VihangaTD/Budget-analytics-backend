@@ -1,9 +1,7 @@
 package com.vihanga.moneymanager.service;
 
-import com.vihanga.moneymanager.dto.ExpenseDto;
 import com.vihanga.moneymanager.dto.IncomeDto;
 import com.vihanga.moneymanager.entity.CategoryEntity;
-import com.vihanga.moneymanager.entity.ExpenseEntity;
 import com.vihanga.moneymanager.entity.IncomeEntity;
 import com.vihanga.moneymanager.entity.ProfileEntity;
 import com.vihanga.moneymanager.repository.CategoryRepository;
@@ -34,8 +32,8 @@ public class IncomeService {
         return toDto(newIncome);
     }
 
-    //retrieves all expenses for the current month/based on start and end dates
-    public List<IncomeDto> getCurrentMonthExpensesForCurrentUser(){
+    //retrieves all incomes for the current month/based on start and end dates
+    public List<IncomeDto> getCurrentMonthIncomesForCurrentUser(){
         ProfileEntity profile = profileService.getCurrentProfile();
         LocalDate now = LocalDate.now();
         LocalDate startDate = now.withDayOfMonth(1);
